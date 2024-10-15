@@ -668,23 +668,35 @@ function serializeElementNode(
   }
   // form fields
   if (tagName === 'input' || tagName === 'textarea' || tagName === 'select') {
-    const value = (n as HTMLInputElement | HTMLTextAreaElement).value;
     const checked = (n as HTMLInputElement).checked;
     if (
       attributes.type !== 'radio' &&
       attributes.type !== 'checkbox' &&
       attributes.type !== 'submit' &&
-      attributes.type !== 'button' &&
-      value
+      attributes.type !== 'button'
     ) {
-      attributes.value = maskInputValue({
-        element: n,
-        type: getInputType(n),
-        tagName,
-        value,
-        maskInputOptions,
-        maskInputFn,
-      });
+      // optionally mask attributes
+      for (const [maskedAttributeName, shouldMaskAttribute] of Object.entries(
+        maskInputOptions.attributes ?? {},
+      )) {
+        if (!shouldMaskAttribute) {
+          continue;
+        }
+
+        const elementAttrValue = (n as Partial<HTMLInputElement>)[
+          maskedAttributeName as keyof HTMLInputElement
+        ];
+        if (elementAttrValue) {
+          attributes.placeholder = maskInputValue({
+            element: n,
+            type: getInputType(n),
+            tagName,
+            value: String(elementAttrValue),
+            maskInputOptions,
+            maskInputFn,
+          });
+        }
+      }
     } else if (checked) {
       attributes.checked = checked;
     }

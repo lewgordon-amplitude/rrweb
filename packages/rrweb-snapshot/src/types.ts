@@ -133,6 +133,11 @@ export type MaskInputOptions = Partial<{
   textarea: boolean;
   select: boolean;
   password: boolean;
+
+  // attributes to mask
+  attributes: {
+    [k in keyof HTMLInputElement | keyof HTMLTextAreaElement]?: boolean;
+  };
 }>;
 
 export type SlimDOMOptions = Partial<{

@@ -128,6 +128,7 @@ function record<T = eventWithTime>(
   const maskInputOptions: MaskInputOptions =
     maskAllInputs === true
       ? {
+          ...(_maskInputOptions ?? {}),
           color: true,
           date: true,
           'datetime-local': true,
